@@ -1353,6 +1353,36 @@ class secondScreen extends State<MyHomePage2> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
+
+
+
+                                                      // Container(
+                                                      //   margin:
+                                                      //       EdgeInsets.all(10),
+                                                      //   width:MediaQuery.of(
+                                                      //                     context)
+                                                      //                 .size
+                                                      //                 .width <=
+                                                      //             240
+                                                      //         ? 240 * 6 / 100
+                                                      //         : MediaQuery.of(context)
+                                                      //                     .size
+                                                      //                     .width >=
+                                                      //                 600
+                                                      //             ? 600 *
+                                                      //                 6 /
+                                                      //                 100
+                                                      //             : MediaQuery.of(
+                                                      //                         context)
+                                                      //                     .size
+                                                      //                     .width *
+                                                      //                 6 /
+                                                      //                 100,
+                                                      // ),
+
+
+
+
                                                     Padding(
                                                       padding:
                                                           EdgeInsets.all(5),
@@ -1408,6 +1438,29 @@ class secondScreen extends State<MyHomePage2> {
                                                         },
                                                       ),
                                                     ),
+                                                    Container(
+                                                        margin:
+                                                            EdgeInsets.all(10),
+                                                        width:MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width <=
+                                                                  240
+                                                              ? 240 * 6 / 100
+                                                              : MediaQuery.of(context)
+                                                                          .size
+                                                                          .width >=
+                                                                      600
+                                                                  ? 600 *
+                                                                      6 /
+                                                                      100
+                                                                  : MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      6 /
+                                                                      100,
+                                                      ),
                                                     Spacer(flex: 1),
                                                     Text(
                                                         "${sortingMethods[selectedSortingMethod]}",

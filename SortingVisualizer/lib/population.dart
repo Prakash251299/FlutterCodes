@@ -58,6 +58,18 @@ class CovidScreen extends State<PopPage> {
 
   int _counter = 0;
   int i = 0, j = 0;
+  int popUpForBar = 0;
+
+  barInfo(){
+    Future.delayed(const Duration(seconds:3),(){
+      if(this.mounted){
+          setState((){
+            // info1=0;
+            info = 0;
+          });
+        }
+    });
+  }
 
   Future<bool> sort(var A) async {
     // print("Sorting");
@@ -576,6 +588,12 @@ class CovidScreen extends State<PopPage> {
 
   @override
   Widget build(BuildContext context){
+    if(popUpForBar==0){
+      setState((){
+        popUpForBar = 1;
+      });
+      barInfo();
+    }
     // return Container();
     return mainScreen(a);
   }
@@ -592,7 +610,7 @@ class CovidScreen extends State<PopPage> {
       SafeArea(child:
           Stack(
             // fit: StackFit.expand, 
-            alignment: Alignment.topRight, 
+            alignment: Alignment.center, 
             children: [
               // Container(
               //   color:Colors.green,
@@ -615,8 +633,8 @@ class CovidScreen extends State<PopPage> {
                     itemBuilder: (context, index) => SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Stack(
-                        // alignment: Alignment.topRight, 
-                        alignment: Alignment.center, 
+                        alignment: Alignment.topRight, 
+                        // alignment: Alignment.center,
                         children: [
                         new Column(
                           children: [
@@ -726,10 +744,32 @@ class CovidScreen extends State<PopPage> {
                                                         },
                                                       ),
                                                     ),
+                                                    Container(
+                                                        margin:
+                                                            EdgeInsets.all(10),
+                                                        width:MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width <=
+                                                                  240
+                                                              ? 240 * 6 / 100
+                                                              : MediaQuery.of(context)
+                                                                          .size
+                                                                          .width >=
+                                                                      600
+                                                                  ? 600 *
+                                                                      6 /
+                                                                      100
+                                                                  : MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      6 /
+                                                                      100,
+                                                      ),
                                                     Spacer(flex: 1),
                                                     Text(
                                                         "Population of states",
-                                                        // "${sortingMethods[selectedSortingMethod]}",
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: MediaQuery.of(
@@ -786,7 +826,8 @@ class CovidScreen extends State<PopPage> {
                                                         ),
                                                       ),
                                                       ),
-                                                      onTap: (() => {
+                                                      onTap: (() async => {
+                                                            await barInfo(),
                                                             setState(() => {
                                                                   if (info ==
                                                                       0)
@@ -1256,8 +1297,68 @@ class CovidScreen extends State<PopPage> {
                     
                 //     children:[
                   // Center(child:
-                  if(info==1)...[
+
+
+
+                  // if(info==1)...[
+                  // Container(
+                  //   margin:EdgeInsets.only(top:MediaQuery.of(context).size.height<=maxHeight?maxHeight/2:MediaQuery.of(context).size.height/2,right:MediaQuery.of(context).size.width<=300?300/2:MediaQuery.of(context).size.width/2,),
+                  //   height:100,
+                  //   width:250,
+                  //   decoration:BoxDecoration(
+                  //     // color:Colors.red,
+                  //     borderRadius:BorderRadius.all(Radius.circular(10)),
+                  //   ),
+                  //   child:Center(child:Text("Tap on the bar for info",style: TextStyle(
+                  //                                         color: Colors.white,
+                  //                                         fontSize: MediaQuery.of(
+                  //                                                         context)
+                  //                                                     .size
+                  //                                                     .width <=
+                  //                                                 240
+                  //                                             ? 240 * 5 / 100
+                  //                                             : MediaQuery.of(context)
+                  //                                                         .size
+                  //                                                         .width >=
+                  //                                                     500
+                  //                                                 ? 500 *
+                  //                                                     5 /
+                  //                                                     100
+                  //                                                 : MediaQuery.of(
+                  //                                                             context)
+                  //                                                         .size
+                  //                                                         .width *
+                  //                                                     5 /
+                  //                                                     100,
+                  //                                       )),),
+                  // ),
+                  // ],
+                  // ),
+                  // ]),
+                  // Row(children: [
+                  //   Text("hjhk",style:TextStyle(color:Colors.yellow)),
+                  // ],)
+                // ]
+              // ),
+
+
+
+                      ]),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+            onTap: () {
+              setState(() => {
+                    hamburger = 0,
+                    hoverCont = 0,
+                    info = 0,
+                  });
+            }),
+            if(info==1)...[
                   Container(
+                    // margin:EdgeInsets.only(top:MediaQuery.of(context).size.height<=maxHeight?maxHeight/2:MediaQuery.of(context).size.height/2,right:MediaQuery.of(context).size.width<=300?300/2:MediaQuery.of(context).size.width/2,),
                     height:100,
                     width:250,
                     decoration:BoxDecoration(
@@ -1288,29 +1389,6 @@ class CovidScreen extends State<PopPage> {
                                                         )),),
                   ),
                   ],
-                  // ),
-                  // ]),
-                  // Row(children: [
-                  //   Text("hjhk",style:TextStyle(color:Colors.yellow)),
-                  // ],)
-                // ]
-              // ),
-
-
-
-                      ]),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            onTap: () {
-              setState(() => {
-                    hamburger = 0,
-                    hoverCont = 0,
-                    info = 0,
-                  });
-            }),
             // Container(
             //     color:Colors.green,
             //     // height:100,
