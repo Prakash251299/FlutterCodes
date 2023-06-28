@@ -5,22 +5,85 @@ import 'dart:math';
 import 'package:async/async.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'json_data_extract.dart';
+import 'population.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+// import './covi';
 
 void main() {
   runApp(const MyApp());
 }
 
 String version = "";
+var state = [
+    "Mizoram",
+    "Chandigarh",
+    "Madhya Pradesh",
+    "Tamil Nadu",
+    "Karnataka",
+    "Gujarat",
+    "Andhra Pradesh",
+    "Uttar Pradesh",
+    "Odisha",
+    "Telangana",
+    "Kerala",
+    "Lakshadweep"
+    "Nagaland",
+    "Jharkhand",
+    "Assam",
+    "Chhattisgarh",
+    "Punjab",
+    "Haryana",
+    "NCT of Delhi",
+    "Rajasthan",
+    "Bihar",
+    "Puducherry",
+    "West Bengal",
+    "Jammu and Kashmir",
+    "Uttarakhand",
+    "Meghalaya",
+    "Manipur",
+    "Maharashtra",
+    "Dadra and daman",
+    "Arunachal Pradesh",
+    "Tripura",
+    "Himachal Pradesh",
+    "Goa",
+    "Sikkim",
+    "Ladakh",
+    "Andaman and Nicobar Islands",
+  ];
+  var resp;
+  var apiFetchError=0;
+  var popTapped = 0;
+  var info1 = 1;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
+  // durationFun()async{
+  //   Future.delayed(const Duration(seconds:5),(){
+  //     // if(this.mounted){
+  //       setState((){
+          
+  //       });
+  //     // }
+  //   });
+  // }
   // This widget is the root of your application.
   @override
-  initState() async {
+  void initState() async {
+    // super.initState();
     PackageInfo packInfo = await PackageInfo.fromPlatform();
     version = packInfo.version;
+    // Future.delayed(const Duration(seconds:5),(){
+    //   if(this.mounted){
+    //     setState((){
+
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -44,12 +107,24 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => firstScreen();
 }
-
+// var maxHeight=498;
+var maxHeight=510;
+var screen2=0;
 class firstScreen extends State<MyHomePage> {
   int n = 100;
   var value = "100";
   var message = "";
   int change = 0;
+  // @override
+  // information1(){
+  //   Future.delayed(const Duration(seconds:2),(){
+  //       if(this.mounted){
+  //         setState((){
+  //           info1 = 0;
+  //         });
+  //       }
+  //   });
+  // }
   Widget button2(int num, List arr, List arr2) {
     return GestureDetector(
       child: Container(
@@ -60,21 +135,32 @@ class firstScreen extends State<MyHomePage> {
         width: MediaQuery.of(context).size.width <= 240
             ? 80
             : MediaQuery.of(context).size.width / 3,
-        height: MediaQuery.of(context).size.height <= 498
-            ? 62
+        // height: MediaQuery.of(context).size.height <= 498
+        //     ? 62
+        //     : (MediaQuery.of(context).size.height / 2) / 4,
+
+
+
+        height: MediaQuery.of(context).size.height <= maxHeight
+            ? maxHeight/8.032
             : (MediaQuery.of(context).size.height / 2) / 4,
         child: Center(
             child: Text("Visualizer", style: TextStyle(color: Colors.red))),
       ),
       onTap: () => {
+            // setState((){
+            //   info1 = 1;
+            // }),
         setState(
           () => {
+            // screen2=0,
             if (num < 2)
               {
                 message = "Put a value >= 2",
               }
             else
               {
+                // await information1(),
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -98,9 +184,11 @@ class firstScreen extends State<MyHomePage> {
         width: MediaQuery.of(context).size.width <= 240
             ? 80
             : MediaQuery.of(context).size.width / 3,
-        height: MediaQuery.of(context).size.height <= 498
-            ? 62
+        height: MediaQuery.of(context).size.height <= maxHeight
+            ? maxHeight/8.032
             : (MediaQuery.of(context).size.height / 2) / 4,
+
+
         child: Center(
             child: a == 10
                 ? Icon(Icons.backspace)
@@ -162,203 +250,281 @@ class firstScreen extends State<MyHomePage> {
     );
   }
 
-  // String csvFilePath = "";
-  var api = "https://data.covid19india.org/v4/min/timeseries.min.json";
-  // var url = Uri.parse("https://data.covid19india.org/v4/min/timeseries.min.json");
-  // data
-  var year = "2020";
-  var month = "10";
-  var day = "31";
-  // String tex = "";
-  showAlertOptions(BuildContext context){
-    Widget okButton = FloatingActionButton(
-      child:Text("OK"),
-      onPressed:()async{
-        await jsonExtractor(api,year,month,day);
-        Navigator.of(context).pop();
-      }
-    );
-    AlertDialog alert = AlertDialog(
-      title:Text("Enter the API and year"),
-      content:GestureDetector(child:Container(
-        child: Row(children:[
-          TextField(
-            decoration:InputDecoration(
-              hintText:api,
-            ),
-            onChanged:(text){
-              api = text;
-              // print(tex);
-            },
-          ),
-          TextField(
-            decoration:InputDecoration(
-              hintText:'2020',
-            ),
-            onChanged:(text){
-              year = text;
-              // print(tex);
-            },
-          ),
+  // var state = [
+  //   "Mizoram",
+  //   "Chandigarh",
+  //   "Madhya Pradesh",
+  //   "Tamil Nadu",
+  //   "Karnataka",
+  //   "Gujarat",
+  //   "Andhra Pradesh",
+  //   "Uttar Pradesh",
+  //   "Odisha",
+  //   "Telangana",
+  //   "Kerala",
+  //   "Lakshadweep"
+  //   "Nagaland",
+  //   "Jharkhand",
+  //   "Assam",
+  //   "Chhattisgarh",
+  //   "Punjab",
+  //   "Haryana",
+  //   "NCT of Delhi",
+  //   "Rajasthan",
+  //   "Bihar",
+  //   "Puducherry",
+  //   "West Bengal",
+  //   "Jammu and Kashmir",
+  //   "Uttarakhand",
+  //   "Meghalaya",
+  //   "Manipur",
+  //   "Maharashtra",
+  //   "Dadra and Nagar Haveli and Daman and Diu",
+  //   "Arunachal Pradesh",
+  //   "Tripura",
+  //   "Himachal Pradesh",
+  //   "Goa",
+  //   "Sikkim",
+  //   "Ladakh",
+  //   "Andaman and Nicobar Islands",
+  // ];
 
-        ]),
-      )),
-      actions:[okButton],
-    );
-    showDialog(
-      context:context,
-      builder:(BuildContext context){
-        return alert;
+  Future<List> fetchApi() async {
+    // const url = 'https://data.covid19india.org/csv/latest/states.csv';
+    const url = 'https://prakash251299.github.io/API/population.json';
+    // try{
+
+    // }catch(e){
+    //   print("Error:");
+    //   print(e);
+    // }
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    // print(body);
+    var res = jsonDecode(body);
+    resp = res;
+    List<int> lst=[];
+    for(int i=0;i<35;i++){
+      if(res[state[i]]==null){
+        lst.add(0);
       }
-    );
+      else{
+        lst.add(res[state[i]]);
+      }
+      // print(lst);
+    }
+    // print(lst);
+    // print(state.length);
+    // print(res[state[0]]);
+    // print(res["Bihar"]);
+    // print("Ishu");
+    // l = lst;
+    // print(l);
+    return lst;
   }
 
-  showAlertDialog(BuildContext context){
-    Widget okButton = FloatingActionButton(
-      child:Text("OK"),
-      onPressed:(){
-        Navigator.of(context).pop();
-      }
-    );
-    AlertDialog alert = AlertDialog(
-      title:Text("hi"),
-      content:
-      GestureDetector(child:Container(
-        child: Text("Monthly data for a specific year"),
-      ),
-      onTap:(){
-        showAlertOptions(context);
-      }),
-      actions: [okButton],
-    );
-    showDialog(
-      context:context,
-      builder:(BuildContext context){
-        return alert;
-      }
-    );
-  }
-
+  // List l=[];
 
   @override
   Widget build(BuildContext context) {
     List<int> a = List.filled(n, 1);
     List<int> a1 = List.filled(n, 1);
+    // List l = List.filled(n, 1);
     for (int i = 0; i < a.length; i++) {
       a[i] = 1 + Random().nextInt(100);
       a1[i] = a[i];
     }
+    // information1(){
+    //   Future.delayed(const Duration(seconds:5),(){
+    //     if(this.mounted){
+    //       setState((){
+    //       info1 = 0;
+    //       });
+    //     }
+    //   });
+    // }
+    errorControl(){
+      Future.delayed(const Duration(seconds:5),(){
+        if(this.mounted){
+          setState((){
+            // info1=0;
+            apiFetchError = 0;
+          });
+        }
+      });
+    }
+    // errorControl();
     return Scaffold(
-      body: Container(
+      body: SafeArea(
+        top:true,
+        left:false,
+        right:false,
+        bottom:true,
+        child:Container(
         color: Colors.grey[300],
         width: MediaQuery.of(context).size.width <= 240
             ? 240
             : MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height <= 497
-            ? 497
-            : MediaQuery.of(context).size.height,
+        // height: MediaQuery.of(context).size.height <= maxHeight
+        //     ? maxHeight*1
+        //     : MediaQuery.of(context).size.height,
         child: ListView.builder(
             itemCount: 1,
             itemBuilder: (c, i) => SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Column(children: [
-                    // Stack(children:[
-                    // Container(
-                    //   height:1000,
-                    //   width:100,
-                    //   color:Colors.red,
-                    //   child:Text("ajsdgjka"),
-                    // ),
-                    Container(
-                      height: MediaQuery.of(context).size.height <= 498
-                          ? 249
-                          : MediaQuery.of(context).size.height / 2,
-                      child: Column(children: [
-                        Row(children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width <= 240
-                                ? 240
-                                : MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.width >= 348
-                                    ? 43
-                                    : MediaQuery.of(context).size.width <= 240
-                                        ? 30
-                                        : MediaQuery.of(context).size.width /
-                                            8),
-                            child: Stack(
-                              alignment:Alignment.center,
-                              children:[
-                                Positioned.fill(
-                                  child:Align(
-                                    alignment:Alignment.centerRight,
-                                    // alignment:Alignment.topRight,
-                                    // alignment:Alignment.bottomRight,
-                                    child:GestureDetector(
-                                      child: Container(
-                                        height:20,
-                                        width:MediaQuery.of(context)
+                  child: 
+                  Stack(
+                    alignment:Alignment.topCenter,
+                    children:[
+                      Container(
+                        // margin:EdgeInsets.only(bottom:MediaQuery.of(context).size.height*50/100),
+                        // margin:EdgeInsets.only(bottom:MediaQuery.of(context).size.height<=maxHeight?maxHeight*50/100:MediaQuery.of(context).size.height*50/100),
+                        // margin:EdgeInsets.only(top:MediaQuery.of(context).size.height<=600?600*12/100:700*12/100),
+                        margin:EdgeInsets.only(top:MediaQuery.of(context).size.height<=600?600*12/100:MediaQuery.of(context).size.height>=700?700*12/100:MediaQuery.of(context).size.height*12/100),
+                        child:Column(children:[
+                    if(apiFetchError==1)...[
+                              Text("Api fetch error you are offline",style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: MediaQuery.of(context)
                                                   .size
                                                   .width >=
                                               348
-                                          ? 29
+                                          ? 16
                                           : MediaQuery.of(context).size.width <=
                                                   240
-                                              ? 20
+                                              ? 10
                                               : MediaQuery.of(context)
                                                       .size
                                                       .width /
-                                                  12,
-                                        color:Colors.amber[200],
-                                        // child: ,
-                                      ),
-                                      onTap:(){
-                                        showAlertDialog(context);
+                                                  24)),
+                    ],
+                      ]),
+                    ),
+                  Stack(
+                    alignment:Alignment.topCenter,
+                    children: [
+                    
 
 
 
 
+                      Container(
+                        // margin: EdgeInsets.only(
+                        //         top: MediaQuery.of(context).size.height >= 348
+                        //             ? 43
+                        //             : MediaQuery.of(context).size.height <= 240
+                        //                 ? 30
+                        //                 : MediaQuery.of(context).size.height /
+                        //                     8),
+                        // margin: EdgeInsets.only(top:10),
+                        // height: 10,
+                        child: 
+                        Row(children:[
+                          Column(children:[
+                          //   if(apiFetchError==0)...[
+                          //     Text("Api fetch error you are offline",style: TextStyle(
+                          //             color: Colors.red,
+                          //             fontSize: MediaQuery.of(context)
+                          //                         .size
+                          //                         .width >=
+                          //                     348
+                          //                 ? 16
+                          //                 : MediaQuery.of(context).size.width <=
+                          //                         240
+                          //                     ? 10
+                          //                     : MediaQuery.of(context)
+                          //                             .size
+                          //                             .width /
+                          //                         24)),
+                          //   ],
+                          // ]),
+                        Row(
+                          // alignment:Alignment.bottomCenter,
+                          children:[
+                          // Text("State wise population visualization of india",style: TextStyle(
+                          //             // color: Colors.green,
+                          //             fontSize: MediaQuery.of(context)
+                          //                         .size
+                          //                         .width >=
+                          //                     348
+                          //                 ? 16
+                          //                 : MediaQuery.of(context).size.width <=
+                          //                         240
+                          //                     ? 10~
+                          //                     : MediaQuery.of(context)
+                          //                             .size
+                          //                             .width /
+                          //                         24)),
+                          // InkWell(child:Icon(Icons.ads_click_outlined,color:Colors.green[900]),onTap:() async {
+                          //   List lst;
+                          //   setState((){
+                          //     popTapped = 1;
+                          //   });
+                          //   try{
+                          //     // print(state[-1]);
+                          //     // print("hi");
+                          //     lst =  await fetchApi();
+                          //     Navigator.push(context,MaterialPageRoute(builder: (context)=>PopPage(lst,lst)));
+                          //   }catch(e){
+                          //     setState((){
+                          //       apiFetchError=1;
+                          //       popTapped = 0;
+                          //     });
+                          //     errorControl();
+                          //   }
 
-                                        
+
+                          // }),
+                        ]),
+                        ]),
+                        ]),
+                      ),
+                    Container(
+                      height: MediaQuery.of(context).size.height <= maxHeight
+                          ? maxHeight/2
+                          : MediaQuery.of(context).size.height / 2,
+                      child: Column(children: [
+                        Row(children: [
+
+                          // Stack(
+                          //   alignment:Alignment.centerRight,
+                          //   children: [
+                          //         Container(color:Colors.red,height:10,width:10),
+                          // ],),
+
+                          Container(
+                            // color:Colors.red,
+                            width: MediaQuery.of(context).size.width <= 240
+                                ? 240
+                                : MediaQuery.of(context).size.width,
+
+                                margin: EdgeInsets.only(top:MediaQuery.of(context).size.height<=maxHeight?maxHeight*2/100:MediaQuery.of(context).size.height*2/100),
+                            // margin: EdgeInsets.only(
+                            //     top: MediaQuery.of(context).size.height >= 348
+                            //         ? 43
+                            //         : MediaQuery.of(context).size.height <= 240
+                            //             ? 30
+                            //             : MediaQuery.of(context).size.height /
+                            //                 8),
 
 
-
-
-
-
-
-
-
-
-                                        // setState(()=>{
-
-                                        // AlertDialog(
-                                        // //   title:Text("ahd"),
-                                        //   content:SingleChildScrollView(
-                                        //     child:Column(children:[
-                                        //       Text("jdshfk"),
-                                        //       Text("jdshfk")
-                                        //     ]),
-                                        //   ),
-                                        //   actions: <Widget>[
-                                        //     TextButton(
-                                        //       child:Text("jhdsk"),
-                                        //       onPressed:(){},
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                        // });
-                                      }
-                                    ),
-                                  ),
-                                ),
-                              // Row(
-                              //   crossAxisAlignment:CrossAxisAlignment.start,
-                              //   children:[
-                              //   Text("hiejk")
-                              // ]),
-                              Center(
-                              child: Text("Sorting visualizer",
+                            // margin: EdgeInsets.only(
+                            //     top: MediaQuery.of(context).size.width >= 348
+                            //         ? 43
+                            //         : MediaQuery.of(context).size.width <= 240
+                            //             ? 30
+                            //             : MediaQuery.of(context).size.width /
+                            //                 8),
+                            child: Center(
+                              child: 
+                            //   Stack(
+                            // alignment:Alignment.centerRight,
+                            // children: [
+                            //       Container(color:Colors.red,height:10,width:10),
+                          // ],),
+                              Column(children:[
+                                Text("Sorting visualizer",
                                   style: TextStyle(
                                       color: Colors.red,
                                       fontSize: MediaQuery.of(context)
@@ -373,20 +539,98 @@ class firstScreen extends State<MyHomePage> {
                                                       .size
                                                       .width /
                                                   12)),
-                            ),]),
+                                // Text("sdfghjk"),
+                                Row(
+                                  mainAxisAlignment:MainAxisAlignment.center,
+                                  children:[
+                                Text("State wise population visualization of india",style: TextStyle(
+                                      // color: Colors.green,
+                                      fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width >=
+                                              348
+                                          ? 16
+                                          : MediaQuery.of(context).size.width <=
+                                                  240
+                                              ? 10
+                                              : MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  24)),
+                          InkWell(child:Icon(Icons.ads_click_outlined,color:Colors.green[900]),onTap:() async {
+                            List lst;
+                            setState((){
+                              popTapped = 1;
+                            });
+                            try{
+                              // print(state[-1]);
+                              // print("hi");
+                              lst =  await fetchApi();
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=>PopPage(lst,lst)));
+                            }catch(e){
+                              setState((){
+                                apiFetchError=1;
+                                popTapped = 0;
+                              });
+                              errorControl();
+                            }
+
+
+                          }),
+                                ]),
+
+
+                    //       Container(
+                    //     margin:EdgeInsets.only(top:maxHeight*2/100),
+                    //     // margin:EdgeInsets.only(top:100),
+                    //     child:Column(children:[
+                    // if(apiFetchError==0)...[
+                    //           Text("Api fetch error you are offline",style: TextStyle(
+                    //                   color: Colors.red,
+                    //                   fontSize: MediaQuery.of(context)
+                    //                               .size
+                    //                               .width >=
+                    //                           348
+                    //                       ? 16
+                    //                       : MediaQuery.of(context).size.width <=
+                    //                               240
+                    //                           ? 10
+                    //                           : MediaQuery.of(context)
+                    //                                   .size
+                    //                                   .width /
+                    //                               24)),
+                    // ],
+                    //   ]),
+                    // ),
+                              
+                        ]),
+
+          
+
+
+
+                            ),
                           ),
                         ]),
                         Column(children: [
                           Container(
-                            height: MediaQuery.of(context).size.height <= 498
-                                ? 166
-                                : MediaQuery.of(context).size.height / 3,
+                            // color:Colors.red,
+                            // height: MediaQuery.of(context).size.height <= 498
+                            //     ? 249/3
+                            //     : MediaQuery.of(context).size.height/3,
+                            height: MediaQuery.of(context).size.height <= maxHeight
+                                ? maxHeight/4
+                                : MediaQuery.of(context).size.height / 4,
+                            // height: MediaQuery.of(context).size.height <= maxHeight
+                            //     ? maxHeight/3-20
+                            //     : MediaQuery.of(context).size.height / 3-20,
                             child: Center(
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                  Row(
+                                  Column(
                                     children: [
+                                      Text("Number of elements to sort",style:TextStyle(color: Color.fromARGB(255, 173, 175, 76))),
                                       Text(value,
                                           style: TextStyle(
                                               fontSize: MediaQuery.of(context)
@@ -406,7 +650,7 @@ class firstScreen extends State<MyHomePage> {
                                                           100)),
                                     ],
                                   ),
-                                  Row(
+                                  Column(
                                     children: [
                                       Text("___________________",
                                           style: TextStyle(
@@ -442,9 +686,12 @@ class firstScreen extends State<MyHomePage> {
                       ]),
                     ),
                     Container(
+                      // color:Colors.red,
                       width: MediaQuery.of(context).size.width <= 240
                           ? 240
                           : MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.only(top:MediaQuery.of(context).size.height<=maxHeight?maxHeight/2:MediaQuery.of(context).size.height/2),
+                      // height: 100,
                       child: Center(
                         child: Column(children: [
                           Row(
@@ -507,7 +754,11 @@ class firstScreen extends State<MyHomePage> {
                       ),
                     ),
                   ]),
+
+                  ]),
+
                 )),
+      ),
       ),
     );
   }
@@ -919,7 +1170,7 @@ class secondScreen extends State<MyHomePage2> {
         : MediaQuery.of(context).size.height;
     var per = 65 / 100;
     double percentHeightOfElements = 0;
-    if (max > minHeight * per) {
+    if (max >= minHeight * per) {
       percentHeightOfElements = (minHeight * per * 100) / max;
       for (i = 0; i < a.length; i++) {
         a[i] = a[i] * percentHeightOfElements / 100;
@@ -998,13 +1249,34 @@ class secondScreen extends State<MyHomePage2> {
       ),
     );
   }
-
+  // information1();
   @override
   Widget build(BuildContext context) {
+    // initState(){
+    // }
+    // initState();
     return mainScreen(a);
   }
-
+  // var screen2 = 0;
   Widget mainScreen(var a) {
+      information1(){
+        Future.delayed(const Duration(seconds:5),(){
+            if(this.mounted){
+              setState((){
+                info1 = 0;
+              });
+            }
+        });
+      }
+      if(screen2==0){
+        information1();
+        setState((){
+          screen2 = 1;
+        });
+      }
+    // information1();
+    // information();
+    // print(a);
     List resizedArr = List.filled(a.length, 0);
     for (i = 0; i < a.length; i++) {
       resizedArr[i] = a[i];
@@ -1012,8 +1284,12 @@ class secondScreen extends State<MyHomePage2> {
     resizedArr = reSizer(resizedArr);
 
     return Scaffold(
-      body:
-          Stack(fit: StackFit.expand, alignment: Alignment.topRight, children: [
+      body:SafeArea(child:
+          Stack(
+            // fit: StackFit.expand, 
+            alignment: Alignment.center, 
+            
+            children: [
         GestureDetector(
             child: Container(
               child: Column(children: [
@@ -1038,6 +1314,7 @@ class secondScreen extends State<MyHomePage2> {
                                 ),
                                 child: new Column(
                                   children: [
+                                    // Stack(children:[]),
                                     Container(
                                       child: Column(children: [
                                         new Row(children: [
@@ -1083,7 +1360,11 @@ class secondScreen extends State<MyHomePage2> {
                                                         child: Container(
                                                           // height:100,
                                                           // width:100,
-                                                          child: Icon(
+                                                          child: 
+                                                          MouseRegion(
+                                                            cursor:SystemMouseCursors.click,
+                                                            child:
+                                                          Icon(
                                                             Icons.arrow_back,
                                                             color: Colors.white,
                                                             size: MediaQuery.of(
@@ -1105,11 +1386,13 @@ class secondScreen extends State<MyHomePage2> {
                                                                         6 /
                                                                         100,
                                                           ),
+                                                          ),
                                                         ),
                                                         onTap: () {
                                                           cancelled = true;
                                                           sortTap = 0;
                                                           hamburger = 0;
+                                                          popTapped = 0;
                                                           Navigator.pop(
                                                               context);
                                                           Navigator.pop(
@@ -1152,11 +1435,15 @@ class secondScreen extends State<MyHomePage2> {
                                                         )),
                                                     Spacer(flex: 1),
                                                     GestureDetector(
-                                                      child: Container(
+                                                      child: 
+                                                      MouseRegion(
+                                                        cursor:SystemMouseCursors.click,
+                                                        child:
+                                                      Container(
                                                         margin:
                                                             EdgeInsets.all(10),
                                                         child: Icon(
-                                                          Icons.menu,
+                                                          Icons.info_outline,
                                                           color: Colors.white,
                                                           size: MediaQuery.of(
                                                                           context)
@@ -1179,18 +1466,68 @@ class secondScreen extends State<MyHomePage2> {
                                                                       100,
                                                         ),
                                                       ),
-                                                      onTap: (() => {
-                                                            setState(() => {
-                                                                  if (hamburger ==
-                                                                      0)
+                                                      ),
+                                                      onTap: (() async => {
+                                                            // setState(() => {
+                                                              await information1(),
+                                                                  if (info1 == 0)
                                                                     {
-                                                                      hamburger =
-                                                                          1,
+                                                                      setState((){
+                                                                        info1 = 1;
+                                                                      }),
                                                                     }
                                                                   else
                                                                     {
-                                                                      hamburger =
-                                                                          0,
+                                                                      setState((){
+                                                                        // info1 = 1;
+                                                                        info1 = 0;
+                                                                      }),
+                                                                    }
+                                                                // }),
+                                                          }),
+                                                    ),
+                                                    GestureDetector(
+                                                      child: Container(
+                                                        margin:
+                                                            EdgeInsets.all(10),
+                                                        child: 
+                                                        MouseRegion(
+                                                          cursor:SystemMouseCursors.click,
+                                                          child: 
+                                                        Icon(
+                                                          Icons.menu,
+                                                          color: Colors.white,
+                                                          size: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width <=
+                                                                  240
+                                                              ? 240 * 6 / 100
+                                                              : MediaQuery.of(context)
+                                                                          .size
+                                                                          .width >=
+                                                                      600
+                                                                  ? 600 *
+                                                                      6 /
+                                                                      100
+                                                                  : MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      6 /
+                                                                      100,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                      onTap: (() => {
+                                                            setState(() => {
+                                                                  if (hamburger == 0)
+                                                                    {
+                                                                      hamburger = 1,
+                                                                    }
+                                                                  else
+                                                                    {
+                                                                      hamburger = 0,
                                                                     }
                                                                 }),
                                                           }),
@@ -1301,7 +1638,11 @@ class secondScreen extends State<MyHomePage2> {
                                               Column(
                                                 children: [
                                                   GestureDetector(
-                                                      child: Container(
+                                                      child: 
+                                                      MouseRegion(
+                                                        cursor:SystemMouseCursors.click,
+                                                        child:
+                                                      Container(
                                                         margin: EdgeInsets.only(
                                                             top: MediaQuery.of(
                                                                             context)
@@ -1336,6 +1677,7 @@ class secondScreen extends State<MyHomePage2> {
                                                                       .brown)),
                                                         ),
                                                       ),
+                                                      ),
                                                       onTap: () async {
                                                         sortTap = 0;
                                                         barColor1 = -1;
@@ -1365,7 +1707,11 @@ class secondScreen extends State<MyHomePage2> {
                                               Column(
                                                 children: [
                                                   GestureDetector(
-                                                      child: Container(
+                                                      child: 
+                                                      MouseRegion(
+                                                        cursor:SystemMouseCursors.click,
+                                                        child:
+                                                      Container(
                                                         margin: EdgeInsets.only(
                                                             top: MediaQuery.of(
                                                                             context)
@@ -1398,6 +1744,7 @@ class secondScreen extends State<MyHomePage2> {
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white))),
+                                                      ),
                                                       ),
                                                       onTap: () {
                                                         hamburger = 0;
@@ -1451,7 +1798,11 @@ class secondScreen extends State<MyHomePage2> {
                                     child: ListView.builder(
                                         itemCount: 1,
                                         itemBuilder: (c, i) {
-                                          return hamburgerOption();
+                                          return 
+                                          MouseRegion(
+                                            cursor:SystemMouseCursors.click,
+                                            child:hamburgerOption(),
+                                          );
                                         }),
                                   ),
                                   GestureDetector(
@@ -1517,6 +1868,7 @@ class secondScreen extends State<MyHomePage2> {
                                       ),
                                       onTap: () {
                                         hamburger = 0;
+                                        info1 = 0;
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -1525,9 +1877,13 @@ class secondScreen extends State<MyHomePage2> {
                                             ));
                                         //
                                       }),
+                      
                                 ]),
                           ),
-                        }
+                        },
+
+
+            
                       ]),
                     ),
                   ),
@@ -1537,9 +1893,58 @@ class secondScreen extends State<MyHomePage2> {
             onTap: () {
               setState(() => {
                     hamburger = 0,
+                    info1=0,
                   });
             }),
+            if(info1==1)...[
+                          // Row(
+                          //   // alignment:Alignment.topCenter,
+                          //   // mainAxisAlignment:MainAxisAlignment.center,
+                          //   // crossAxisAlignment:CrossAxisAlignment.center,
+                          //   children:[
+            Center(child:
+            Container(
+                    // margin:EdgeInsets.only(top:MediaQuery.of(context).size.height<=maxHeight?maxHeight*50/100:0),
+                    height:100,
+                    width:250,
+                    decoration:BoxDecoration(
+                      color:Colors.black87,
+                      borderRadius:BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child:Center(child:
+                    // Column(
+                    //   mainAxisAlignment:MainAxisAlignment.center,
+                    //   children:[
+                        Text("Visualize different sorting algorithms and its working",textAlign:TextAlign.center,style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width <=
+                                                                  240
+                                                              ? 240 * 3 / 100
+                                                              : MediaQuery.of(context)
+                                                                          .size
+                                                                          .width >=
+                                                                      500
+                                                                  ? 500 *
+                                                                      3 /
+                                                                      100
+                                                                  : MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      3 /
+                                                                      100,
+                                                        )),
+                    // ]),
+                                                        ),
+                  ),
+            ),
+                          // ]),
+            ],
       ]),
+      ),
     );
   }
 }
@@ -1566,7 +1971,9 @@ class Screen3 extends State<MyHomepage3> {
         this.b = d ?? [];
   //
   Widget settingOptionsButton(int i) {
-    return InkWell(
+    return 
+    SafeArea(child:
+    InkWell(
         child: Container(
           height: MediaQuery.of(context).size.width <= 240
               ? 240 * 20 / 100
@@ -1645,7 +2052,8 @@ class Screen3 extends State<MyHomepage3> {
                   });
             print("${settingOptions[i]}");
           }
-        });
+        }),
+    );
   }
 
   Future<bool> barChanger(int i) async {
@@ -1687,7 +2095,9 @@ class Screen3 extends State<MyHomepage3> {
   Widget screen() {
     // print("hi");
     return Scaffold(
-        body: ListView.builder(
+        body: 
+        SafeArea(child:
+        ListView.builder(
             itemCount: 1,
             itemBuilder: (context, index) => SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -2018,8 +2428,12 @@ class Screen3 extends State<MyHomepage3> {
                           }),
                       GestureDetector(
                         child: Container(
-                          margin: EdgeInsets.only(left: 2, top: 5),
-                          child: Icon(
+                          margin: EdgeInsets.only(left: 2, top: 10),
+                          child: 
+                          MouseRegion(
+                            cursor:SystemMouseCursors.click,
+                            child:
+                          Icon(
                             Icons.arrow_back,
                             color: Colors.white,
                             size: MediaQuery.of(context).size.width <= 240
@@ -2030,6 +2444,7 @@ class Screen3 extends State<MyHomepage3> {
                                         6 /
                                         100,
                           ),
+                          ),
                         ),
                         onTap: () {
                           cancelled = true;
@@ -2037,16 +2452,25 @@ class Screen3 extends State<MyHomepage3> {
                           hamburger = 0;
                           Navigator.pop(context);
                           Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyHomePage2(a, b),
-                              ));
+                          if(popTapped==0){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyHomePage2(a, b),
+                                ));
+                          }else{
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyHomePage2(a, b),
+                                ));
+                          }
                         },
                       ),
                     ]),
                   ]),
-                )));
+                )),
+                ));
   }
 
   @override
